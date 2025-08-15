@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     max_days_limit: int = 365
     database_url: str
     table_name: str
+    redis_cache_url: str
+    expire_cache: int = 60 * 60 * 24
 
     class Config:
         env_file = '.env'
