@@ -1,19 +1,19 @@
 from pydantic import BaseModel, Field
-from datetime import date
+import datetime as dt
 
 
 class TradingResultsDB(BaseModel):
     """Схема вывода результатов торгов."""
-    exchange_product_id: str
-    exchange_product_name: str
-    oil_id: str
-    delivery_basis_id: str
-    delivery_basis_name: str
-    delivery_type_id: str
-    volume: int
-    total: int
-    count: int
-    date: date
+    exchange_product_id: str = Field(..., title='Код инструмента')
+    exchange_product_name: str = Field(..., title='Наименование инструмента')
+    oil_id: str = Field(..., title='ID нефтепродукта')
+    delivery_basis_id: str = Field(..., title='ID базиса поставки')
+    delivery_basis_name: str = Field(..., title='Базис поставки')
+    delivery_type_id: str = Field(..., title='ID типа поставки')
+    volume: int = Field(..., title='Объем')
+    total: int = Field(..., title='Сумма, руб.')
+    count: int = Field(..., title='Количество договоров')
+    date: dt.date = Field(..., title='Дата торгов')
 
     class Config:
         orm_mode = True
@@ -28,5 +28,5 @@ class TradingResultsQuery(BaseModel):
 
 class DynamicTradingResultsQuery(TradingResultsQuery):
     """Схема для фильтрации торгов за период."""
-    start_date: date
-    end_date: date
+    start_date: dt.date
+    end_date: dt.date
