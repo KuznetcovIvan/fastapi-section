@@ -1,12 +1,17 @@
-from fastapi import APIRouter, Depends, Query
-from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import date
 
-from app.db import get_async_session
-from app.schemas import TradingResultsDB, TradingResultsQuery, DynamicTradingResultsQuery
-from app.crud import read_trading_results_from_db, get_trading_dates
-from app.validators import query_filter_validators
+from fastapi import APIRouter, Depends, Query
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.config import settings
+from app.crud import get_trading_dates, read_trading_results_from_db
+from app.db import get_async_session
+from app.schemas import (
+    DynamicTradingResultsQuery,
+    TradingResultsDB,
+    TradingResultsQuery,
+)
+from app.validators import query_filter_validators
 
 spimex_router = APIRouter(prefix='/api')
 
@@ -14,7 +19,7 @@ spimex_router = APIRouter(prefix='/api')
 @spimex_router.get(
     '/trading-dates',
     response_model=list[date],
-    summary='Cписок дат последних торговых дней'
+    summary='Cписок дат последних торговых дней',
 )
 async def get_last_trading_dates(
     session: AsyncSession = Depends(get_async_session),
@@ -26,7 +31,7 @@ async def get_last_trading_dates(
 @spimex_router.get(
     '/results-by-date',
     response_model=list[TradingResultsDB],
-    summary='Cписок торгов за заданный период'
+    summary='Cписок торгов за заданный период',
 )
 async def get_dynamics(
     session: AsyncSession = Depends(get_async_session),
@@ -40,7 +45,7 @@ async def get_dynamics(
 @spimex_router.get(
     '/last-results',
     response_model=list[TradingResultsDB],
-    summary='Cписок последних торгов'
+    summary='Cписок последних торгов',
 )
 async def get_trading_results(
     session: AsyncSession = Depends(get_async_session),
