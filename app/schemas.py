@@ -1,8 +1,9 @@
-from pydantic import BaseModel, Extra, Field, root_validator
+from pydantic import BaseModel, Field
 from datetime import date
 
 
 class TradingResultsDB(BaseModel):
+    """Схема вывода результатов торгов."""
     exchange_product_id: str
     exchange_product_name: str
     oil_id: str
@@ -15,29 +16,17 @@ class TradingResultsDB(BaseModel):
     date: date
 
     class Config:
-        title = 'Схема вывода результатов торгов'
         orm_mode = True
 
 
 class TradingResultsQuery(BaseModel):
-    oil_id: None | str = Field(None, min_length=4, max_length=4)
-    delivery_type_id: None | str = Field(None, min_length=1, max_length=1)
-    delivery_basis_id: None | str = Field(None, min_length=3, max_length=3)
-
-    class Config:
-        title = 'Схема для фильтрации последних торгов'
-        extra = Extra.forbid
+    """Схема для фильтрации последних торгов."""
+    oil_id: str | None = Field(None, min_length=4, max_length=4)
+    delivery_type_id: str | None = Field(None, min_length=1, max_length=1)
+    delivery_basis_id: str | None = Field(None, min_length=3, max_length=3)
 
 
 class DynamicTradingResultsQuery(TradingResultsQuery):
+    """Схема для фильтрации торгов за период."""
     start_date: date
     end_date: date
-
-    class Config:
-        title = 'Схема для фильтрации торгов за период'
-
-    @root_validator
-    def check_dates(cls, values):
-        if values['start_date'] > values['end_date']:
-            raise ValueError('start_date не может быть позже end_date')
-        return values
