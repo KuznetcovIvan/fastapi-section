@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     table_name: str
     redis_cache_url: str
     expire_cache: int = 60 * 60 * 24
+    clear_cache_time: dict = {'hour': 14, 'minute': 11}
 
     class Config:
         env_file = '.env'

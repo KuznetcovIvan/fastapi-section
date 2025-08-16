@@ -27,6 +27,8 @@ async def startup():
         await connection.run_sync(map_trading_results)
 
     scheduler.add_job(
-        clear_cache_task, CronTrigger(hour=14, minute=11), id='clear_cache'
+        clear_cache_task,
+        CronTrigger(**settings.clear_cache_time),
+        id='clear_cache',
     )
     scheduler.start()
