@@ -16,19 +16,25 @@ app.include_router(spimex_router)
 redis_client = redis.from_url(settings.redis_cache_url)
 scheduler = AsyncIOScheduler()
 
-FastAPICache.init(
-    RedisBackend(redis_client), prefix='spimex', expire=settings.expire_cache
-)
-
 
 @app.on_event('startup')
 async def startup():
     async with engine.begin() as connection:
         await connection.run_sync(map_trading_results)
-
+    FastAPICache.init(
+        RedisBackend(redis_client),
+        prefix='spimex',
+        expire=settings.expire_cache,
+    )
     scheduler.add_job(
         clear_cache_task,
         CronTrigger(**settings.clear_cache_time),
         id='clear_cache',
     )
     scheduler.start()
+
+
+@app.on_event('shutdown')
+async def shutdown():
+    scheduler.shutdown(wait=False)
+    await redis_client.close()

@@ -14,7 +14,7 @@ from app.schemas import (
 )
 from app.validators import query_filter_validators
 
-spimex_router = APIRouter(prefix='/api')
+spimex_router = APIRouter(prefix='/api', tags=['Trading results'])
 
 SLUG_TRADING_DATES = 'trading-dates'
 SUMMARY_TRADING_DATES = 'Cписок дат последних торговых дней'
